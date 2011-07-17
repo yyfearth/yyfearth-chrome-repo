@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name ajax submit in V2EX
 // @description using ajax to submit in v2ex.
-// @version 0.1.0.0
+// @version 0.1.1.0
 // @auther yyfearth@gmail.com
 // @match http://*.v2ex.com/t/*
 // @match https://*.v2ex.com/t/*
@@ -34,20 +34,33 @@
 			},
 			success: function(html) {
 				if (html) {
-					var rep = $(html.replace(/<script.*?<\/script>/ig,'')).find('#replies').html()
-					rep && $('#replies').html(rep);
+					var rep = $('#replies'),
+					html = $(html.replace(/<script.*?<\/script>/ig,'')),
+					rep_html = html.find('#replies').html();
+					if (!rep_html) { // no reps return
+						alert('err: no replies in return html');
+					} else if (!rep.length) { // no reply yet, use content instead
+						rep_html = html.find('#Content').html();
+						rep_html && $('#Content').html(rep_html);
+					} else { // ok
+						rep_html && $('#replies').html(rep_html);
+					}
 				} else {
-					alert('ajax return empty');
+					alert('err: ajax return empty');
 				}
 			},
 			error: function() {
-				alert('ajax faild');
+				alert('err: ajax faild');
 			}
 		});
 		return false;
 	});
 	txt.keydown(function(e) {
-		!txt.attr('disabled') && e.ctrlKey && e.keyCode==13 && frm.submit();
+		if (e.ctrlKey && e.keyCode == 13) {
+			event.stopPropagation();
+			frm.submit();
+			return false;
+		}
 	});
 })();
 
