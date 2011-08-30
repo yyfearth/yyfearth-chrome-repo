@@ -8,6 +8,7 @@
 // @match *://www.v2ex.com/t/*
 // @match *://v2ex.appspot.com/t/*
 // ==/UserScript==
+// ! this src file is only for dev, it will not have any effect yet!
 (function() {
 	var txt = $('#reply_content'),
 	frm = txt.parents('form'),
