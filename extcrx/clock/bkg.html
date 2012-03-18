@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html lang='en-US'>
+<head>
+	<meta charset='UTF-8'>
+	<title></title>
+	<style type='text/css'>
+	</style>
+</head>
+<body>
+	<canvas id='clock' width='18' height='18'>
+	</canvas>
+	<script type='text/javascript'>
+	function init(){
+		window.showTime = true;
+		clock();
+		var intv = 10000;
+		var now = new Date();
+		var next = 60000 - now.getSeconds() * 1000 - now.getMilliseconds();
+		chrome.browserAction.setBadgeBackgroundColor({color:[0,0,200,50]});
+		setTimeout(function(){
+			setInterval(clock,intv);
+		}, next % intv);
+		setTimeout(function(){
+			setInterval(time, 1000);
+		}, 1000 - new Date().getMilliseconds())
+	}
+	init();
+	function time() {
+		chrome.browserAction.setTitle({title: new Date().toLocaleTimeString()});
+	}
+	function clock(now){
+		now = now || new Date();
+		console.log('draw', now.toTimeString());
+		var canvas = document.getElementById('clock'), ctx = canvas.getContext('2d');
+		ctx.save();
+		ctx.clearRect(0,0,18,18);
+		ctx.translate(9,9);
+		ctx.rotate(-Math.PI/2);
+		ctx.strokeStyle = 'black';
+		//ctx.fillStyle = 'white';
+		ctx.lineCap = 'round';
+		var sec = now.getSeconds();
+		var min = now.getMinutes();
+		var hr  = now.getHours();
+		hr = hr>=12 ? hr-12 : hr;
+		ctx.fillStyle = 'black';
+		// write Hours
+		ctx.save();
+		ctx.rotate(hr*(Math.PI/6) + (Math.PI/360)*min + (Math.PI/21600)*sec)
+		ctx.lineWidth = 1.5;
+		ctx.beginPath();
+		ctx.moveTo(0,0);
+		ctx.lineTo(5.5,0);
+		ctx.stroke();
+		ctx.restore();
+		// write Minutes
+		ctx.save();
+		ctx.rotate((Math.PI/30)*min + (Math.PI/1800)*sec)
+		ctx.lineWidth = 1.2;
+		ctx.beginPath();
+		ctx.moveTo(0,0);
+		ctx.lineTo(6,0);
+		ctx.stroke();
+		ctx.restore();
+		// inter circle
+		ctx.beginPath();
+		ctx.fillStyle = '#555';
+		ctx.arc(0,0,1.5,0,Math.PI*2,true);
+		ctx.fill();
+		// outer circle
+		ctx.beginPath();
+		ctx.lineWidth = 1.5;
+		ctx.strokeStyle = '#325FA2';
+		ctx.arc(0,0,8,0,Math.PI*2,true);
+		ctx.stroke();
+		ctx.restore();
+		// save
+		chrome.browserAction.setIcon({imageData: ctx.getImageData(0,0,canvas.width,canvas.height)});
+		if (window.showTime) chrome.browserAction.setBadgeText({text: now.getHours() + ':' + now.getMinutes()});
+	}
+	chrome.browserAction.onClicked.addListener(function(tab) {
+		window.showTime = !window.showTime;
+		console.log('showTime', window.showTime);
+		if (!window.showTime) chrome.browserAction.setBadgeText({text:''});
+		clock();
+	});
+	</script>
+</body>
+</html>

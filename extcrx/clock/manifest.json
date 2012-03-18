@@ -1,0 +1,8 @@
+{
+	"name": "Clock",
+	"version": "1.0",
+	"description": "The first extension that I made.",
+	"browser_action": {
+	},
+	"background_page": "bkg.html"
+}
