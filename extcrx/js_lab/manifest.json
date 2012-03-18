@@ -1,0 +1,26 @@
+﻿{
+	"name": "JS Lab - test field",
+	"version": "0.1.0.0",
+	"description": "a javascript lab for test with cross domain xhr provided by chrome app.",
+	"update_url": "http://chrome.yyfearth.com/app/updates.xml",
+	"app": {
+		"launch": {
+			"local_path": "index.html"
+		}
+	},
+	"icons": {
+		"16": "icons/lab-16.png",
+		"24": "icons/lab-24.png",
+		"32": "icons/lab-32.png",
+		"48": "icons/lab-48.png",
+		"64": "icons/lab-64.png",
+		"128": "icons/lab-128.png",
+		"256": "icons/lab-256.png"
+	},
+	"permissions": [ 
+		"*://*/*",
+		"cookies",
+		"notifications",
+		"unlimitedStorage"
+	]
+}
