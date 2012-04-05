@@ -1,0 +1,13 @@
+{
+   "background_page": "background.html",
+   "options_page": "option.html",
+   "description": "A Chrome extension for viewing Youku online videos from overseas (without proxy!)",
+   "icons": {
+      "128": "icon-128.png",
+      "16" : "icon-16.png",
+      "48" : "icon-48.png"
+   },
+   "name": "Unblock Me",
+   "permissions": [ "webRequest", "webRequestBlocking", "*://*/*" ],
+   "version": "0.1"
+}
