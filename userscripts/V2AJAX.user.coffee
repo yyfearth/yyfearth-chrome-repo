@@ -2,13 +2,13 @@
 // ==UserScript==
 // @name V2AJAX (Ajax Submit in V2EX)
 // @description using ajax to submit in v2ex.
-// @version 0.2
-// @auther yyfearth@gmail.com
+// @version 0.2.2
+// @auther yyfearth#gmail.com
 // @include *://*.v2ex.com/t/*
-// @match *://*.v2ex.com/t/*
 // ==/UserScript==
 ###
 
+### utils ###
 $query = (q, el = document) -> el.querySelector q
 $queryAll = (q, el = document) -> [].slice.call el.querySelectorAll q
 
@@ -45,18 +45,26 @@ failed = (act = on, err...) ->
     console.log 'failed', act
   return
 
+### for topics ###
+
 # get replies box
 get_replies = (el = document) ->
-  replies_box_query = '#Main>.box'
-  replies_box_seq = 1
-  replies_box_regex = /感谢回复者|目前尚无回复|\d+\s*回复\s*\|\s*直到/
-  replies_box = ($queryAll replies_box_query, el)[replies_box_seq]
+  replies_box = ($queryAll '#Main>.box', el)[1]
   # validate box
-  if replies_box and replies_box_regex.test replies_box.innerText or replies_box.textContent
+  if replies_box and /感谢回复者|目前尚无回复|\d+\s*回复\s*\|\s*直到/.test replies_box.innerText or replies_box.textContent
     replies_box
   else
     null
 
+# get personal info in sidebar
+get_info = (el = document) ->
+  info = $query '#Rightbar>.box', el
+  if ($query '#money', info) or $query '[href="/notifications"]', info
+    info
+  else
+    null
+
+### init ###
 # get text
 reply_content = $query '#reply_content'
 # find form
@@ -71,14 +79,38 @@ reply_submit = $query 'input[type="submit"]'
 reply_submit.text = reply_submit.value # save orginal text
 # get replies box
 replies_box = get_replies null
-return failed 'stop', 'cannot find replies box' unless get_replies
+return failed 'stop', 'cannot find replies box' unless replies_box
+info_box = get_info null
+failed 'continue', 'cannot find info box' unless info_box
+
+### autosave ###
+store_key = reply_form.action + '#content'
+store_data = localStorage[store_key] or ''
+
+# restore
+if not reply_content.value and store_data
+  reply_content.value = store_data
+  console.log 'load from store', store_key, store_data
+
+# save
+autosave = ->
+  val = reply_content.value
+  store_data = localStorage[store_key]
+  return unless store_data or val
+  localStorage[store_key] = val.trim()
+  console.log 'save to store', store_key, val
+  return
+
+$bind window, 'unload', autosave
+
+### submit ###
 
 lockbtn = (lock) ->
   reply_submit.classList[if lock then 'remove' else 'add'] 'normal'
   reply_submit.disabled = !!lock
 
 lockform = (lock) ->
-  if (disabled = !!lock)
+  if disabled = !!lock
     text = '...'
     act = 'remove'
     disabled = yes
@@ -92,15 +124,19 @@ lockform = (lock) ->
   reply_submit.disabled = reply_content.disabled = disabled
 
 # ajax success
-onsuccess = (html) ->
-  console.log 'onsuccess', html
+update = (html) ->
+  # console.log 'onsuccess', html
   unless (html = html.trim())
     alert 'ajax return empty result'
     failed 'reload', 'empty return html'
   html = html.replace /<script.*?<\/script>/ig, '' # clean js
   # get new replies content
-  doc = document.createElement 'doc'
-  doc.innerHTML = html
+  doc = document.implementation.createHTMLDocument()
+  doc.documentElement.innerHTML = html # fill html
+  # change title
+  if doc.title and document.title isnt doc.title
+    document.title = doc.title
+  # get new replies
   new_replies = get_replies doc
   failed 'reload', 'cannot locate new replies' unless new_replies
   # apply new replies
@@ -109,7 +145,16 @@ onsuccess = (html) ->
   # reply_content.scrollIntoViewIfNeeded()
   reply_content.value = '' # clear
   reply_content.focus()
+  # update info
+  if info_box
+    new_info_box = get_info doc
+    unless new_info_box
+      failed 'continue', 'cannot locate new info box'
+    else
+      info_box.innerHTML = new_info_box.innerHTML
   return
+
+### bind ###
 
 reply_submit.type = 'button' # prevent submit
 reply_submit.onclick = do_submit = ->
@@ -117,7 +162,7 @@ reply_submit.onclick = do_submit = ->
   unless (content = reply_content.value.trim())
     lockbtn on
   else 
-    data = 'content=' + encodeURIComponent content
+    data = 'content=' + encodeURIComponent content.replace /\n/g, '\r\n'
     # todo: foreach field if need
     lockform on
     $ajax # do ajax submit
@@ -125,7 +170,7 @@ reply_submit.onclick = do_submit = ->
       method: reply_form.method
       data: data
       timeout: 5000
-      success: onsuccess
+      success: update
       error: (s, t) -> failed 'submit', 'ajax failed', s, t
       complete: -> lockform off
   return
@@ -153,6 +198,13 @@ do test_empty = ->
 
 $bind reply_content, 'input', test_empty
 
+$bind reply_content, 'change', ->
+  reply_content.value = reply_content.value.trim()
+  test_empty()
+  autosave()
+  return
+
+### done ###
 # set a sign
 subnmit_key = if /Mac OS/i.test navigator.userAgent then '^/⌘ + ↵' else 'ctrl+enter'
 reply_submit.insertAdjacentHTML 'afterend', "<span class=\"fade\"> #{subnmit_key} </span>"
