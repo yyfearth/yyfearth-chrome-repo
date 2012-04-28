@@ -131,7 +131,7 @@ update = (html) ->
     failed 'reload', 'empty return html'
   html = html.replace /<script.*?<\/script>/ig, '' # clean js
   # get new replies content
-  doc = document.implementation.createHTMLDocument()
+  doc = document.implementation.createHTMLDocument(document.title)
   doc.documentElement.innerHTML = html # fill html
   # change title
   if doc.title and document.title isnt doc.title
