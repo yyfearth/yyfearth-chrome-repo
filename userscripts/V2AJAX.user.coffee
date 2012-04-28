@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name V2AJAX (Ajax Submit in V2EX)
 // @description using ajax to submit in v2ex.
-// @version 0.2.2
+// @version 0.2.3
 // @auther yyfearth#gmail.com
 // @include *://*.v2ex.com/t/*
 // ==/UserScript==
@@ -154,10 +154,7 @@ update = (html) ->
       info_box.innerHTML = new_info_box.innerHTML
   return
 
-### bind ###
-
-reply_submit.type = 'button' # prevent submit
-reply_submit.onclick = do_submit = ->
+do_submit = ->
   console.log 'ajax submit'
   unless (content = reply_content.value.trim())
     lockbtn on
@@ -174,6 +171,18 @@ reply_submit.onclick = do_submit = ->
       error: (s, t) -> failed 'submit', 'ajax failed', s, t
       complete: -> lockform off
   return
+
+post_form = ->
+  reply_form.submit() if reply_content.value.trim()
+
+### bind ###
+
+reply_submit.type = 'button' # prevent submit
+reply_submit.onclick = (e) ->
+  if e.altKey
+    post_form()
+  else
+    do_submit()
 
 # reply keydown to submit
 $bind reply_content, 'keydown', (e) ->
