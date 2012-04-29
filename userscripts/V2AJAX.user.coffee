@@ -129,7 +129,8 @@ update = (html) ->
   unless (html = html.trim())
     alert 'ajax return empty result'
     failed 'reload', 'empty return html'
-  html = html.replace /<script.*?<\/script>/ig, '' # clean js
+  # do not clean for gist
+  # html = html.replace /<script.*?<\/script>/ig, '' # clean js
   # get new replies content
   doc = document.implementation.createHTMLDocument(document.title)
   doc.documentElement.innerHTML = html # fill html
