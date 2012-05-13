@@ -2,8 +2,9 @@
 // ==UserScript==
 // @name V2AJAX (Ajax Submit in V2EX)
 // @description using ajax to submit in v2ex.
-// @version 0.2.5
+// @version 0.2.5.1
 // @auther yyfearth#gmail.com
+// @include *://v2ex.com/t/*
 // @include *://*.v2ex.com/t/*
 // ==/UserScript==
 ###
