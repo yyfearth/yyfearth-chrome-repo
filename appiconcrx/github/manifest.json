@@ -1,17 +1,16 @@
 {
-   "app": {
-      "launch": {
-         "web_url": "https://github.com/"
-      },
-      "urls": [ "*://github.com/yyfearth/" ]
-   },
-   "description": "Go to Github for yyfearth only!",
-   "icons": {
-      "128": "icon-128.png",
-      "16": "icon-16.png"
-   },
-   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDdr3UuqBkD9Ychqp26JIWS1KiUg77UjdQoVypN+AbJS8jAs1S1mW1nxkUvWvvLC5G3lVU87cJc5dunndHAAM0DMb9ccHdj6HBzCXAlyYvR/C/M/zh+JZEeLzB+z7ZUVdC0JRE0Cp2MDbq9ZBW6SAlOiw5rZ1U8//AvNwZ4Wpuy5wIDAQAB",
-   "name": "Github",
-   "permissions": [ "notifications", "unlimitedStorage" ],
-   "version": "0.1"
+	"app": {
+		"launch": {
+			"web_url": "https://github.com/"
+		},
+		"urls": [ "*://github.com/" ]
+	},
+	"description": "Go to Github!",
+	"icons": {
+		"128": "icon-128.png",
+		"16": "icon-16.png"
+	},
+	"key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDdr3UuqBkD9Ychqp26JIWS1KiUg77UjdQoVypN+AbJS8jAs1S1mW1nxkUvWvvLC5G3lVU87cJc5dunndHAAM0DMb9ccHdj6HBzCXAlyYvR/C/M/zh+JZEeLzB+z7ZUVdC0JRE0Cp2MDbq9ZBW6SAlOiw5rZ1U8//AvNwZ4Wpuy5wIDAQAB",
+	"name": "Github",
+	"version": "0.2"
 }
