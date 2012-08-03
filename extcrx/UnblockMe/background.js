@@ -1,6 +1,3 @@
-<!doctype html>
-
-<script>
 (function() {
 	var urls, ip;
 
@@ -30,4 +27,3 @@
 	// the request is blocked until the callback function returns
 	["requestHeaders", "blocking"]);
 })();
-</script>

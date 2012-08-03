@@ -1,5 +1,8 @@
 {
-   "background_page": "background.html",
+   "manifest_version": 2,
+   "background": {
+      "scripts": [ "background.js" ]
+   },
    "options_page": "option.html",
    "description": "A Chrome extension for viewing Youku online videos from overseas (without proxy!)",
    "icons": {
@@ -9,5 +12,5 @@
    },
    "name": "Unblock Me",
    "permissions": [ "webRequest", "webRequestBlocking", "*://*/*" ],
-   "version": "0.1"
+   "version": "0.2"
 }

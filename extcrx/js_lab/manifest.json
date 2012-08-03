@@ -1,6 +1,7 @@
 ﻿{
 	"name": "JS Lab - test field",
-	"version": "0.1.0.0",
+	"version": "0.1.0.1",
+	"manifest_version": 2,
 	"description": "a javascript lab for test with cross domain xhr provided by chrome app.",
 	"update_url": "http://chrome.yyfearth.com/app/updates.xml",
 	"app": {
