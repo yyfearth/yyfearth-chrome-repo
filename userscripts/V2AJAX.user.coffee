@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name V2AJAX (Ajax Submit in V2EX)
 // @description using ajax to submit in v2ex.
-// @version 0.2.5.1
+// @version 0.2.6.0
 // @auther yyfearth#gmail.com
 // @include *://v2ex.com/t/*
 // @include *://*.v2ex.com/t/*
@@ -97,6 +97,8 @@ while reply_form.tagName isnt 'FORM'
 # get submit btn
 reply_submit = $query 'input[type="submit"]'
 reply_submit.text = reply_submit.value # save orginal text
+# get once token
+token_name = 'input[name="once"]'
 # get replies box
 replies_box = get_replies null
 return failed 'stop', 'cannot find replies box' unless replies_box
@@ -161,6 +163,10 @@ update = (html) ->
     else
       fav_bar.innerHTML = new_fav_bar.innerHTML
       bind_fav()
+  # update once token
+  token = $query token_name, reply_form
+  new_token = $query 'form ' + token_name, doc
+  token.value = new_token.value
   return
 
 ### fav ###
@@ -211,7 +217,8 @@ do_submit = ->
   unless (content = reply_content.value.trim())
     lockbtn on
   else 
-    data = 'content=' + encodeURIComponent content.replace /\n/g, '\r\n'
+    once = $query token_name, reply_form
+    data = 'once=' + once.value + '&content=' + encodeURIComponent content.replace /\n/g, '\r\n'
     # todo: foreach field if need
     lockform on
     $ajax # do ajax submit
